@@ -16,7 +16,14 @@ def broadcast(mensagem):
     for cliente in clientes:
         cliente.send(mensagem)
 
-        
+def sair(cliente):
+    index = clientes.index(cliente)
+    nickname = nicknames[index]
+    clientes.remove(cliente)
+    cliente.close()
+    print(f'Usuario: {nickname} desconectado do servidor.')
+    broadcast(f'{nickname} saiu do chat.'.encode())
+    nicknames.remove(nickname)
 
 def cliente_servidor(cliente):
     while True:
@@ -24,24 +31,12 @@ def cliente_servidor(cliente):
             mensagem = cliente.recv(1024)
 
             if mensagem.decode() == "/sair":
-                index = clientes.index(cliente)
-                nickname = nicknames[index]
-                clientes.remove(cliente)
-                cliente.close()
-                print(f'Usuario: {nickname} desconectado do servidor.')
-                broadcast(f'{nickname} saiu do chat.'.encode())
-                nicknames.remove(nickname)
+                sair(cliente)
                 break
             
             broadcast(mensagem)
         except:
-            index = clientes.index(cliente)
-            clientes.remove(cliente)
-            cliente.close()
-            print(f'Usuario: {nickname} desconectado do servidor.')
-            nickname = nicknames[index]
-            broadcast('{} Saiu do Chatpy!'.format(nickname).encode(''))
-            nicknames.remove(nickname)
+            sair(cliente)
             break
 
 def receber_servidor():
@@ -54,7 +49,7 @@ def receber_servidor():
         clientes.append(cliente)
 
         print("Usuário '{}' conectado: {}".format(nickname, str(address)))
-        broadcast("{}, está participando no chat!".format(nickname).encode())
+        broadcast("Servidor -> {}, está participando no chat!".format(nickname).encode())
         cliente.send('Conectou com sucesso no server!'.encode()) 
 
         receber_servidor_thread = threading.Thread(target=cliente_servidor, args=(cliente,))
