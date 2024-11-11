@@ -25,16 +25,37 @@ def sair(cliente):
     broadcast(f'{nickname} saiu do chat.'.encode())
     nicknames.remove(nickname)
 
+def privado(cliente, mensagem):
+
+    mensagem_privada = mensagem.split(' ',3)
+    
+    destinatario = mensagem_privada[2]
+    mensagem_para_enviar = mensagem_privada[3]
+
+    if destinatario in nicknames:
+        index_destinatario = nicknames.index(destinatario)
+        cliente_destinatario = clientes[index_destinatario]
+        mensagem_final = f"Mensagem privada de {nicknames[clientes.index(cliente)]}: {mensagem_para_enviar}"
+
+        cliente_destinatario.send(mensagem_final.encode())
+        cliente.send(f"Mensagem enviada para {destinatario}: {mensagem_para_enviar}".encode())
+    else:
+        cliente.send(f"Erro: O usuário {destinatario} não está online.".encode())
+
+
 def cliente_servidor(cliente):
     while True:
         try:
-            mensagem = cliente.recv(1024)
+            mensagem = cliente.recv(1024).decode()
 
-            if mensagem.decode() == "/sair":
+            if "/sair" in mensagem:
                 sair(cliente)
                 break
-            
-            broadcast(mensagem)
+
+            if "/privado" in mensagem:
+                privado(cliente, mensagem)
+            else:
+                broadcast(mensagem.encode())
         except:
             sair(cliente)
             break
@@ -48,8 +69,8 @@ def receber_servidor():
         nicknames.append(nickname)
         clientes.append(cliente)
 
-        print("Usuário '{}' conectado: {}".format(nickname, str(address)))
-        broadcast("Servidor -> {}, está participando no chat!".format(nickname).encode())
+        print(f"Usuário '{nickname}' conectado: {address}")
+        broadcast(f"Servidor -> {nickname}, está participando no chat!".encode())
         cliente.send('Conectou com sucesso no server!'.encode()) 
 
         receber_servidor_thread = threading.Thread(target=cliente_servidor, args=(cliente,))
@@ -58,5 +79,5 @@ def receber_servidor():
 #---- Inicio ----#
 os.system('cls')
 print("Inicializando Servidor ...")
-print("Servidor  está no ar!!")
+print("Servidor está no ar!!")
 receber_servidor()
