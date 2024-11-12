@@ -70,6 +70,8 @@ Este projeto usa a biblioteca socket e threading. Não há necessidade de instal
 
 - Para enviar uma mensagem pública, digite a mensagem normalmente e pressione Enter.
 - Para sair do chat, digite `/sair`.
-- Para enviar uma mensagem privada, use o comando '/privado <apelido> <mensagem>`. Por exemplo:
+- Para enviar uma mensagem privada, use o comando '/privado <apelido> <mensagem>`. 
+
+Por exemplo:
   ```plaintext
   /privada Lucas Olá, Lucas! Esta é uma mensagem privada.
