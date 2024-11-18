@@ -2,7 +2,12 @@ import socket
 import threading
 import os
 
+os.system('cls')
 
+print(">---- Menu de função ----<")
+print(">> /privado")
+print(">> /Sair")
+print(">------------------------<")
 nickname = input("Inserá seu apelido: ")
 
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -12,10 +17,14 @@ def receber_cliente():
     while True:
         try:
             mensagem = cliente.recv(1024).decode()
-            if mensagem == 'NICK':
+            if mensagem == 'Apelido':
                 cliente.send(nickname.encode())
             else:
                 print(mensagem)
+
+                escrever_cliente_thread = threading.Thread(target=escrever_cliente)
+                escrever_cliente_thread.start()
+
         except:
             print("Erro! Desconectando...")
             cliente.close()
@@ -35,8 +44,4 @@ def escrever_cliente():
 
 os.system('cls')
 
-receber_cliente_thread = threading.Thread(target=receber_cliente)
-receber_cliente_thread.start()
-
-escrever_cliente_thread = threading.Thread(target=escrever_cliente)
-escrever_cliente_thread.start()
+receber_cliente()
