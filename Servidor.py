@@ -2,7 +2,7 @@ import socket
 import threading
 import os
 
-host = '127.0.0.1'
+host = '127.0.0.1'  #PARA FUNCIONAR NO 4G, LOGAR NO 4G PRIMEIRO E COLOCAR IPV4 NO HOST
 porta = 55555
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,23 +48,20 @@ def cliente_servidor(cliente):
         try:
             mensagem = cliente.recv(1024).decode()
 
-            if "/sair" in mensagem:
-                sair(cliente)
-                break
-
             if "/privado" in mensagem:
                 privado(cliente, mensagem)
             else:
                 broadcast(mensagem.encode())
         except:
             sair(cliente)
+            
             break
 
 def receber_servidor():
     while True:
         cliente, address = server.accept()
 
-        cliente.send('NICK'.encode())
+        cliente.send('Apelido'.encode())
         nickname = cliente.recv(1024).decode()
         nicknames.append(nickname)
         clientes.append(cliente)
@@ -72,6 +69,7 @@ def receber_servidor():
         print(f"Usuário '{nickname}' conectado: {address}")
         broadcast(f"Servidor -> {nickname}, está participando no chat!".encode())
         cliente.send('Conectou com sucesso no server!'.encode()) 
+
 
         receber_servidor_thread = threading.Thread(target=cliente_servidor, args=(cliente,))
         receber_servidor_thread.start()
