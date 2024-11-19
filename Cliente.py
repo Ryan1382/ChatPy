@@ -8,7 +8,7 @@ print(">---- Menu de função ----<")
 print(">> /privado")
 print(">> /Sair")
 print(">------------------------<")
-nickname = input("Inserá seu apelido: ")
+nickname = input("Insira seu apelido: ")
 
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 cliente.connect(('127.0.0.1', 55555))
