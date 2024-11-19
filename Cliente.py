@@ -26,7 +26,6 @@ def receber_cliente():
                 escrever_cliente_thread.start()
 
         except:
-            print("Erro! Desconectando...")
             cliente.close()
             break
 
